@@ -1,1 +1,40 @@
-<p>hero-list works!</p>
+<div class="hero-list-container">
+  <div class="search-bar">
+    <mat-form-field appearance="outline">
+      <mat-label>Search heroes</mat-label>
+      <input matInput [formControl]="searchControl" placeholder="Type to search...">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="addHero()">
+      <mat-icon>add</mat-icon>
+      Add Hero
+    </button>
+  </div>
+
+  <div class="grid-container">
+    @for (hero of heroStore.filteredHeroes().heroes; track hero.id) {
+      <div @fadeSlide>
+        <app-hero-card 
+          [hero]="hero" 
+          (edit)="editHero($event)"
+          (delete)="deleteHero($event)">
+        </app-hero-card>
+      </div>
+    } @empty {
+      <div class="no-results">
+        <mat-icon>search_off</mat-icon>
+        <p>No heroes found</p>
+      </div>
+    }
+  </div>
+
+  <div class="paginator-container">
+    <mat-paginator
+      [length]="heroStore.filteredHeroes().totalFiltered"
+      [pageSize]="heroStore.pagination().itemsPerPage"
+      [pageIndex]="heroStore.pagination().currentPage"
+      (page)="handlePageEvent($event)">
+    </mat-paginator>
+  </div>
+</div>

@@ -1,1 +1,50 @@
-<p>hero-card works!</p>
+<mat-card class="hero-card" 
+          [@cardHover]="cardState" 
+          (mouseenter)="cardState = 'hovered'"
+          (mouseleave)="cardState = 'normal'">
+<div class="hero-banner" [style.background-color]="getPublisherColor()">
+    <div class="hero-avatar">
+      {{ hero.name.charAt(0) }}
+    </div>
+  </div>
+  
+  <mat-card-header>
+    <mat-card-title>{{ hero.name }}</mat-card-title>
+    <mat-card-subtitle>{{ hero.alterEgo }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="info-section">
+      <span class="publisher">{{ hero.publisher }}</span>
+      <div class="rating">
+        <mat-icon *ngFor="let star of getRatingArray()">star</mat-icon>
+      </div>
+    </div>
+    
+    <div class="powers-section">
+      <mat-chip-set>
+        <mat-chip *ngFor="let power of hero.powers">
+          {{ power }}
+        </mat-chip>
+      </mat-chip-set>
+    </div>
+
+    <div class="appearance-date">
+      First Appearance: {{ hero.firstAppearance | date:'mediumDate' }}
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-icon-button color="primary" 
+            (click)="edit.emit(hero)"
+            [@iconRotate]="buttonState"
+            (mouseenter)="buttonState = 'rotated'"
+            (mouseleave)="buttonState = 'normal'">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-button color="warn" (click)="delete.emit(hero)">
+      <mat-icon>delete</mat-icon>
+      DELETE
+    </button>
+  </mat-card-actions>
+</mat-card>

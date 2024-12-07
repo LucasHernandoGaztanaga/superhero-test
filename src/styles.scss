@@ -8,3 +8,14 @@ body {
   margin: 0; 
   font-family: Roboto, "Helvetica Neue", sans-serif; 
 }
+
+.hero-dialog {
+  .mat-mdc-dialog-surface {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .mat-mdc-dialog-container {
+    padding: 0;
+  }
+}

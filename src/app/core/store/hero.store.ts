@@ -1,5 +1,6 @@
+import { isPlatformBrowser } from '@angular/common';
 import { computed, effect, signal, Signal } from '@angular/core';
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { Hero } from '../models/hero.model';
 import { MOCK_HEROES } from '../data/mock-heroes';
 
@@ -31,7 +32,9 @@ const initialState: HeroState = {
   providedIn: 'root'
 })
 export class HeroStore {
+  private platformId = inject(PLATFORM_ID);
   private state = signal<HeroState>(initialState);
+  private isBrowser = isPlatformBrowser(this.platformId);
 
   heroes: Signal<Hero[]> = computed(() => this.state().heroes);
   loading: Signal<boolean> = computed(() => this.state().loading);
@@ -39,34 +42,41 @@ export class HeroStore {
   filter: Signal<string> = computed(() => this.state().filter);
   pagination: Signal<HeroState['pagination']> = computed(() => this.state().pagination);
 
-  filteredHeroes: Signal<Hero[]> = computed(() => {
+  filteredHeroes = computed(() => {
     const { heroes, filter, pagination } = this.state();
     
     let filtered = heroes;
     
     if (filter) {
       filtered = heroes.filter(hero => 
-        hero.name.toLowerCase().includes(filter.toLowerCase())
+        hero.name.toLowerCase().includes(filter.toLowerCase()) ||
+        hero.alterEgo.toLowerCase().includes(filter.toLowerCase())
       );
     }
 
     const start = pagination.currentPage * pagination.itemsPerPage;
     const end = start + pagination.itemsPerPage;
     
-    return filtered.slice(start, end);
+    return {
+      heroes: filtered.slice(start, end),
+      totalFiltered: filtered.length
+    };
   });
 
   constructor() {
-    effect(() => {
-      localStorage.setItem('heroState', JSON.stringify(this.state()));
-    });
 
-    const savedState = localStorage.getItem('heroState');
-    if (savedState) {
-      this.state.set({
-        ...JSON.parse(savedState),
-        loading: false
+    if (this.isBrowser) {
+      effect(() => {
+        localStorage.setItem('heroState', JSON.stringify(this.state()));
       });
+
+      const savedState = localStorage.getItem('heroState');
+      if (savedState) {
+        this.state.set({
+          ...JSON.parse(savedState),
+          loading: false
+        });
+      }
     }
   }
 
@@ -119,8 +129,8 @@ export class HeroStore {
     }));
   }
 
-  setFilter(filter: string): void {
-    this.state.update((state: HeroState) => ({
+  setFilter(filter: string) {
+    this.state.update(state => ({
       ...state,
       filter,
       pagination: {

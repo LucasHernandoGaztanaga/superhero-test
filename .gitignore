@@ -1,0 +1,52 @@
+# Dependencias
+/node_modules
+/package-lock.json
+
+# Compilados
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# IDE
+/.idea
+/.project
+/.classpath
+/.c9/
+*.launch
+/.settings/
+*.sublime-workspace
+/.vscode
+*.code-workspace
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+.env
+
+# Angular
+.angular/cache
+.sass-cache/
+
+# Testing
+/coverage
+/libpeerconnection.log
+testem.log
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Configuración local
+/src/environments/*.local.ts
+
+# Misc
+/.angular
+/.sass-cache
+/connect.lock
+/coverage
+/typings
+*.pem

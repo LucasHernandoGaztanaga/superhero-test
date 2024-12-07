@@ -1,1 +1,94 @@
-<p>hero-form works!</p>
+<div class="hero-form-container">
+  <div class="dialog-header" [ngClass]="{'edit-mode': hero}">
+    <h2 class="dialog-title">
+      <mat-icon>{{ hero ? 'edit' : 'add_circle' }}</mat-icon>
+      {{ hero ? 'Edit Hero' : 'Create New Hero' }}
+    </h2>
+    <button mat-icon-button mat-dialog-close class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-dialog-content>
+      <div class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Hero Name</mat-label>
+          <input matInput formControlName="name" #nameInput>
+          <mat-icon matSuffix>superhero</mat-icon>
+          <mat-hint>Enter the hero's name</mat-hint>
+          <mat-error *ngIf="form.get('name')?.hasError('required')">
+            Name is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Alter Ego</mat-label>
+          <input matInput formControlName="alterEgo">
+          <mat-icon matSuffix>person</mat-icon>
+          <mat-hint>Secret identity of the hero</mat-hint>
+          <mat-error *ngIf="form.get('alterEgo')?.hasError('required')">
+            Alter ego is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Publisher</mat-label>
+          <mat-select formControlName="publisher">
+            <mat-option *ngFor="let pub of publishers" [value]="pub">
+              {{ pub }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>business</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>First Appearance</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="firstAppearance">
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Powers</mat-label>
+          <mat-chip-grid #chipGrid>
+            <mat-chip-row *ngFor="let power of powers" 
+                       (removed)="removePower(power)"
+                       [removable]="true">
+              {{power}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip-row>
+          </mat-chip-grid>
+          <input placeholder="Add power..."
+                 [matChipInputFor]="chipGrid"
+                 (matChipInputTokenEnd)="addPower($event)">
+          <mat-icon matSuffix>flash_on</mat-icon>
+        </mat-form-field>
+
+        <div class="rating-field full-width">
+          <label class="rating-label">Rating</label>
+          <mat-button-toggle-group formControlName="rating">
+            <mat-button-toggle *ngFor="let rate of [1,2,3,4,5]" [value]="rate">
+              {{ rate }}
+              <mat-icon class="rating-star">star</mat-icon>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+      <button mat-button mat-dialog-close type="button" class="cancel-button">
+        <mat-icon>close</mat-icon>
+        Cancel
+      </button>
+      <button mat-raised-button 
+              color="primary" 
+              type="submit"
+              [disabled]="!isFormValid()">
+        <mat-icon>{{ hero ? 'save' : 'add_circle' }}</mat-icon>
+        {{ hero ? 'Update Hero' : 'Create Hero' }}
+      </button>
+    </mat-dialog-actions>
+  </form>
+</div>

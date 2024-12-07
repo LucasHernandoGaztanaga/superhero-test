@@ -1,0 +1,15 @@
+.hero-dialog {
+    .mat-mdc-dialog-container {
+      padding: 0;
+    }
+  
+    .mdc-dialog__surface {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+  
+    .mat-mdc-dialog-content {
+        max-height: 80vh;
+        padding: 0;
+    }
+}
