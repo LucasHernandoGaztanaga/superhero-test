@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { Hero } from '../../../../core/models/hero.model';
 import { Publisher } from '../../../../core/models/publisher.enum';
+import { UppercaseDirective } from '../../../../shared/directives/uppercase.directive';
 
 @Component({
   selector: 'app-hero-form',
@@ -29,6 +30,7 @@ import { Publisher } from '../../../../core/models/publisher.enum';
     MatDatepickerModule,
     MatNativeDateModule,
     MatSelectModule,
+    UppercaseDirective,
     MatButtonToggleModule,
   ],
   templateUrl: './hero-form.component.html',

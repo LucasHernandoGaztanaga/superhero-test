@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -16,7 +16,7 @@ import { Hero } from '../../../../core/models/hero.model';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-
+import { EventsService, HeroEvent } from '../../../../core/services/events.service';
 
 @Component({
   selector: 'app-hero-list',
@@ -53,6 +53,7 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
   styleUrls: ['./hero-list.component.scss']
 })
 export class HeroListComponent implements OnInit{
+  private eventsService = inject(EventsService);
   private snackBar = inject(MatSnackBar);
   heroStore = inject(HeroStore);
   dialog = inject(MatDialog);
@@ -64,6 +65,27 @@ export class HeroListComponent implements OnInit{
   
   ngOnInit() {
     this.setupSearch();
+    this.setupEventListeners();
+  }
+
+  private handleHeroEvent(event: HeroEvent) {
+    const messages = {
+      created: 'Hero created successfully',
+      updated: 'Hero updated successfully',
+      deleted: 'Hero deleted successfully'
+    };
+
+    this.showSnackbar(messages[event.type]);
+  }
+
+
+  private setupEventListeners() {
+    effect(() => {
+      const event = this.eventsService.heroEvent();
+      if (event) {
+        this.handleHeroEvent(event);
+      }
+    });
   }
 
   private setupSearch() {
@@ -90,15 +112,21 @@ export class HeroListComponent implements OnInit{
       if (result) {
         if (hero) {
           this.heroStore.updateHero(result);
-          this.showSnackbar('Hero updated successfully');
+          this.eventsService.emitHeroEvent({ 
+            type: 'updated', 
+            hero: result 
+          });
         } else {
           this.heroStore.addHero(result);
-          this.showSnackbar('Hero created successfully');
+          this.eventsService.emitHeroEvent({ 
+            type: 'created', 
+            hero: result 
+          });
         }
       }
     });
   }
-  
+
   addHero() {
     this.openHeroDialog();
   }
@@ -121,11 +149,15 @@ export class HeroListComponent implements OnInit{
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.heroStore.deleteHero(hero.id);
-        this.showSnackbar('Hero deleted successfully');
+        this.eventsService.emitHeroEvent({ 
+          type: 'deleted', 
+          hero 
+        });
       }
     });
   
   }
+
   private showSnackbar(message: string) {
     this.snackBar.open(message, 'Close', {
       duration: 3000,
@@ -133,4 +165,5 @@ export class HeroListComponent implements OnInit{
       verticalPosition: 'bottom'
     });
   }
+
 }

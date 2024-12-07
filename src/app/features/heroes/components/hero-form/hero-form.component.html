@@ -14,9 +14,10 @@
       <div class="form-grid">
         <mat-form-field appearance="outline">
           <mat-label>Hero Name</mat-label>
-          <input matInput formControlName="name" #nameInput>
-          <mat-icon matSuffix>superhero</mat-icon>
-          <mat-hint>Enter the hero's name</mat-hint>
+          <input matInput 
+                 formControlName="name" 
+                 appUppercase 
+                 placeholder="Enter hero name">
           <mat-error *ngIf="form.get('name')?.hasError('required')">
             Name is required
           </mat-error>

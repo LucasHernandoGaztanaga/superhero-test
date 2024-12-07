@@ -1,25 +1,21 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, MatToolbarModule],
-  template: `
-    <mat-toolbar color="primary">
-      <span>Superhero Manager</span>
-    </mat-toolbar>
-    <main class="container">
-      <router-outlet />
-    </main>
-  `,
-  styles: [`
-    .container {
-      padding: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-  `]
+  imports: [
+    RouterOutlet, 
+    LoadingSpinnerComponent,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule
+  ],  
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent { }
