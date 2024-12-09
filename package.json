@@ -49,6 +49,6 @@
     "karma-spec-reporter": "^0.0.36",
     "prettier": "^3.4.2",
     "prettier-eslint": "^16.3.0",
-    "typescript": "~5.2.0"
+    "typescript": "~5.6.0"
   }
 }
