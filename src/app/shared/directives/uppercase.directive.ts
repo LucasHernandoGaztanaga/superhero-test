@@ -25,11 +25,12 @@ export class UppercaseDirective {
   @HostListener('paste', ['$event'])
   onPaste(event: ClipboardEvent) {
     event.preventDefault();
-    const pastedInput = event.clipboardData?.getData('text/plain')
-      .toUpperCase();
+    const pastedInput = event.clipboardData?.getData('text/plain');
       
-    if (pastedInput) {
-      this.control.control?.setValue(pastedInput);
+    if (pastedInput?.trim()) {
+      this.control.control?.setValue(pastedInput.toUpperCase());
+    } else if (this.control.value) {
+      this.control.control?.setValue(this.control.value.toString().toUpperCase());
     }
   }
 }

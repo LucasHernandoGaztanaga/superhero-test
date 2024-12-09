@@ -21,6 +21,9 @@
           <mat-error *ngIf="form.get('name')?.hasError('required')">
             Name is required
           </mat-error>
+          <mat-error *ngIf="form.get('name')?.errors?.['minlength']">
+            Name must be at least 3 characters
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -43,11 +46,16 @@
           <mat-icon matSuffix>business</mat-icon>
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" class="form-field">
           <mat-label>First Appearance</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="firstAppearance">
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <input matInput 
+                 [matDatepicker]="picker" 
+                 formControlName="firstAppearance"
+                 (click)="picker.open()"
+                 readonly>
+          <mat-hint>Click to select date</mat-hint>
           <mat-datepicker #picker></mat-datepicker>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">

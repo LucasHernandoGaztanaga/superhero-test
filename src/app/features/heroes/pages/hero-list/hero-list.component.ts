@@ -62,14 +62,16 @@ export class HeroListComponent implements OnInit{
   handlePageEvent(e: PageEvent) {
     this.heroStore.updatePagination(e.pageIndex);
   }
+  constructor() {
+    this.setupEventListeners();
+  }
   
   ngOnInit() {
     this.setupSearch();
-    this.setupEventListeners();
   }
 
   private handleHeroEvent(event: HeroEvent) {
-    const messages = {
+    const messages: Record<HeroEvent['type'], string> = {
       created: 'Hero created successfully',
       updated: 'Hero updated successfully',
       deleted: 'Hero deleted successfully'
@@ -78,12 +80,11 @@ export class HeroListComponent implements OnInit{
     this.showSnackbar(messages[event.type]);
   }
 
-
   private setupEventListeners() {
     effect(() => {
-      const event = this.eventsService.heroEvent();
-      if (event) {
-        this.handleHeroEvent(event);
+      const eventData = this.eventsService.heroEvent();
+      if (eventData) {
+        this.handleHeroEvent(eventData);
       }
     });
   }
@@ -134,7 +135,7 @@ export class HeroListComponent implements OnInit{
   editHero(hero: Hero) {
     this.openHeroDialog(hero);
   }
-
+  
   deleteHero(hero: Hero) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
@@ -149,13 +150,12 @@ export class HeroListComponent implements OnInit{
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.heroStore.deleteHero(hero.id);
-        this.eventsService.emitHeroEvent({ 
-          type: 'deleted', 
-          hero 
+        this.eventsService.emitHeroEvent({
+          type: 'deleted',
+          hero
         });
       }
     });
-  
   }
 
   private showSnackbar(message: string) {

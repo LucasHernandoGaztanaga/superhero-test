@@ -14,6 +14,8 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { Hero } from '../../../../core/models/hero.model';
 import { Publisher } from '../../../../core/models/publisher.enum';
 import { UppercaseDirective } from '../../../../shared/directives/uppercase.directive';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { NativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-hero-form',
@@ -33,9 +35,28 @@ import { UppercaseDirective } from '../../../../shared/directives/uppercase.dire
     UppercaseDirective,
     MatButtonToggleModule,
   ],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
+    { provide: DateAdapter, useClass: NativeDateAdapter },
+    {
+      provide: MAT_DATE_FORMATS,
+      useValue: {
+        parse: {
+          dateInput: 'LL',
+        },
+        display: {
+          dateInput: 'MM/DD/YYYY',
+          monthYearLabel: 'MMM YYYY',
+          dateA11yLabel: 'LL',
+          monthYearA11yLabel: 'MMMM YYYY',
+        },
+      },
+    },
+  ],
   templateUrl: './hero-form.component.html',
   styleUrls: ['./hero-form.component.scss']
-})
+ })
+
 export class HeroFormComponent {
   form!: FormGroup;
   powers: string[] = [];
@@ -55,11 +76,25 @@ export class HeroFormComponent {
   
   private initForm() {
     this.form = this.fb.group({
-      name: ['', Validators.required],
-      alterEgo: ['', Validators.required],
-      publisher: ['', Validators.required],
-      rating: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
-      firstAppearance: [new Date(), Validators.required]
+      name: ['', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(50)
+      ]],
+      alterEgo: ['', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(50)
+      ]],
+      publisher: ['', [Validators.required]],
+      rating: [5, [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(5)
+      ]],
+      firstAppearance: [new Date(), [
+        Validators.required,
+      ]],
     });
 
     if (this.hero) {
@@ -70,10 +105,10 @@ export class HeroFormComponent {
       });
     }
   }
-
+  
   addPower(event: any) {
-    const power = event.value?.trim();
-    if (power) {
+    const power = event.value?.trim().toUpperCase();
+    if (power && power.length >= 3 && !this.powers.includes(power) && this.powers.length < 10) {
       this.powers.push(power);
       event.input.value = '';
     }
@@ -99,17 +134,38 @@ export class HeroFormComponent {
 
   getErrorMessage(controlName: string): string {
     const control = this.form.get(controlName);
-    if (!control) return '';
-    
+    if (!control || !control.errors) return '';
+  
     if (control.hasError('required')) {
-      return 'This field is required';
+      return `${controlName} is required`;
     }
     if (control.hasError('minlength')) {
-      return `Minimum length is ${control.getError('minlength').requiredLength}`;
+      return `${controlName} must be at least ${control.errors['minlength'].requiredLength} characters`;
     }
-    if (control.hasError('min') || control.hasError('max')) {
-      return 'Value must be between 1 and 5';
+    if (control.hasError('maxlength')) {
+      return `${controlName} cannot exceed ${control.errors['maxlength'].requiredLength} characters`;
     }
+    if (control.hasError('min')) {
+      return `Minimum value is ${control.errors['min'].min}`;
+    }
+    if (control.hasError('max')) {
+      return `Maximum value is ${control.errors['max'].max}`;
+    }
+    
     return '';
+  }
+
+  getFormErrors(): string[] {
+    const errors: string[] = [];
+    
+    if (this.powers.length === 0) {
+      errors.push('At least one power is required');
+    }
+    
+    if (this.powers.length > 10) {
+      errors.push('Maximum 10 powers allowed');
+    }
+    
+    return errors;
   }
 }

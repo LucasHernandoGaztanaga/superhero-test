@@ -6,8 +6,12 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "serve:ssr:superhero-test": "node dist/superhero-test/server/server.mjs",
     "test": "ng test",
-    "serve:ssr:superhero-test": "node dist/superhero-test/server/server.mjs"
+    "test:coverage": "ng test --code-coverage --no-watch",
+    "test:watch": "ng test --watch",
+    "test:headless": "ng test --browsers ChromeHeadless --watch=false",
+    "test:ci": "ng test --browsers ChromeHeadless --watch=false --code-coverage"
   },
   "private": true,
   "dependencies": {
@@ -42,8 +46,9 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "karma-spec-reporter": "^0.0.36",
     "prettier": "^3.4.2",
     "prettier-eslint": "^16.3.0",
-    "typescript": "~5.6.2"
+    "typescript": "~5.2.0"
   }
 }
