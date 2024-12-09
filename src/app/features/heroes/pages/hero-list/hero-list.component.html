@@ -1,20 +1,22 @@
 <div class="hero-list-container">
-  <div class="search-bar">
-    <mat-form-field appearance="outline">
-      <mat-label>Search heroes</mat-label>
-      <input matInput [formControl]="searchControl" placeholder="Type to search...">
-      <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+  <header class="header-section">
+    <div class="search-bar">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search heroes</mat-label>
+        <input matInput [formControl]="searchControl" placeholder="Type to search...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
 
-    <button mat-raised-button color="primary" (click)="addHero()">
-      <mat-icon>add</mat-icon>
-      Add Hero
-    </button>
-  </div>
+      <button mat-raised-button color="primary" class="add-button" (click)="addHero()">
+        <mat-icon>add</mat-icon>
+        Add Hero
+      </button>
+    </div>
+  </header>
 
   <div class="grid-container">
     @for (hero of heroStore.filteredHeroes().heroes; track hero.id) {
-      <div @fadeSlide>
+      <div class="card-container" @fadeSlide>
         <app-hero-card 
           [hero]="hero" 
           (edit)="editHero($event)"
@@ -23,18 +25,21 @@
       </div>
     } @empty {
       <div class="no-results">
-        <mat-icon>search_off</mat-icon>
-        <p>No heroes found</p>
+        <mat-icon class="no-results-icon">sentiment_dissatisfied</mat-icon>
+        <h3>No heroes found</h3>
+        <p>Try adjusting your search or add a new hero</p>
       </div>
     }
   </div>
 
-  <div class="paginator-container">
+  <footer class="paginator-container">
     <mat-paginator
+      class="custom-paginator"
       [length]="heroStore.filteredHeroes().totalFiltered"
       [pageSize]="heroStore.pagination().itemsPerPage"
       [pageIndex]="heroStore.pagination().currentPage"
+      [pageSizeOptions]="[6, 12, 24]"
       (page)="handlePageEvent($event)">
     </mat-paginator>
-  </div>
+  </footer>
 </div>
