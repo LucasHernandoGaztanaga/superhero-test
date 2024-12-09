@@ -87,9 +87,40 @@
 }
 
 .paginator-container {
-  margin-top: auto;
-  padding-top: 1.5rem;
+  margin-top: 24px;
   
+  @media (max-width: 600px) {
+    
+    ::ng-deep {
+      .mat-mdc-paginator {
+        .mat-mdc-paginator-container {
+          padding: 0;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 16px;
+        }
+
+        .mat-mdc-paginator-page-size {
+          margin: 0;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .mat-mdc-paginator-range-label {
+          margin: 0;
+          flex: 1;
+          text-align: right;
+        }
+
+        .mat-mdc-paginator-range-actions {
+          display: none;
+        }
+      }
+    }
+  }
+
   .custom-paginator {
     background: white;
     border-radius: 8px;
